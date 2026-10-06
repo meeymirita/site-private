@@ -268,7 +268,7 @@
     <div class="card"><span class="tag">сервер</span><h3>Сервер с Caddy</h3>
       <p>Ubuntu 22.04, адрес <code>45.10.166.23</code>. Заходите по SSH (раздел «Сервер»). Он же держит ваш другой сайт <code>meeymirita.ru</code>.</p></div>
     <div class="card"><span class="tag">тут</span><h3>Эта страница</h3>
-      <p>Файл <code>mira/index.html</code> в репозитории. Меняется как любой другой файл: правка → пуш → через минуту на сайте.</p></div>
+      <p>Файл <code>mira/index.html</code> лежит в отдельном репозитории <code>site-private</code> (подмодуль главного). Правка → пуш в <code>site-private</code> → «Bump site-private» в главном → через минуту на сайте.</p></div>
   </div>
 </section>
 
@@ -329,7 +329,7 @@
     <p>Команды из этой страницы делятся на два вида: «на вашем Mac» (в строке <code>…@MacBook</code>) и «на сервере» (в строке <code>root@weaselcloud</code>). Над каждым блоком с командой написано, где её выполнять. Вставили не туда — не страшно, но ничего не сработает или создастся не там (как было с ключом).</p></div>
 
   <h3>Как устроен деплой сайта</h3>
-  <p>Скрипт <code>/opt/anitech-src/deploy/deploy-site.sh</code> делает три вещи: подтягивает свежий <code>main</code> с GitHub, сравнивает номер версии с уже выложенным (он записан в <code>/var/lib/anitech-deploy.rev</code>) и, если версия новая, копирует нужное сайту в папку Caddy. Копируется только: <code>index.html</code>, <code>favicon.svg</code>, <code>images/</code>, <code>mira/</code>, <code>mira-login/</code>, <code>works/</code> (без тяжёлых картинок). Всё остальное (папки лаб, методички) сайту не нужно: методички открываются из бакета.</p>
+  <p>Скрипт <code>/opt/anitech-src/deploy/deploy-site.sh</code> делает три вещи: подтягивает свежий <code>main</code> с GitHub, сравнивает номер версии с уже выложенным (он записан в <code>/var/lib/anitech-deploy.rev</code>) и, если версия новая, копирует нужное сайту в папку Caddy. Копируется только: <code>index.html</code>, <code>favicon.svg</code>, <code>images/</code>, <code>works/</code> (без тяжёлых картинок), а из подмодуля <code>site-private</code> — <code>mira/</code>, <code>mira-login/</code> и <code>404.html</code>. Всё остальное (папки лаб, методички) сайту не нужно: методички открываются из бакета.</p>
   <div class="cmd"><span class="where">на сервере</span><pre><code># когда срабатывал таймер и что выложил
 systemctl list-timers anitech-deploy.timer
 journalctl -u anitech-deploy.service -n 20 --no-pager
@@ -444,11 +444,11 @@ old_files/…остальное        ваши старые выгрузки (�
   <details><summary><span>Сменить пароль страницы /mira/ <small>или поставить заново</small></span></summary><div class="body">
     <p>Выполняется на сервере. Скрипт спросит новый пароль (символы при вводе не видны; печатайте на английской раскладке), сам вставит защиту в Caddyfile, проверит конфиг и перезагрузит Caddy. Если Caddy конфиг не примет, всё откатится как было.</p>
     <div class="cmd"><span class="where">на сервере</span><pre><code>bash &lt;(curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/protect-mira.sh)</code></pre><button class="btn copy" type="button">Копировать</button></div>
-    <p>Логин всегда <code>mira</code>. После смены пароля все устройства разлогиниваются (ключ входа создаётся заново), входить нужно с новым. Выбирайте пароль, который нельзя угадать по названию сайта. Форма входа — файл <code>mira-login/index.html</code> в репозитории.</p>
+    <p>Логин всегда <code>mira</code>. После смены пароля все устройства разлогиниваются (ключ входа создаётся заново), входить нужно с новым. Выбирайте пароль, который нельзя угадать по названию сайта. Форма входа — файл <code>mira-login/index.html</code> в репозитории <code>site-private</code>.</p>
   </div></details>
 
   <details><summary><span>Включить защитные заголовки и страницу 404 <small>один раз на сервере</small></span></summary><div class="body">
-    <p>Скрипт добавляет заголовки безопасности (HSTS, nosniff, запрет встраивания в чужие страницы и др.) и красивую страницу «404», проверяет конфиг и перезагружает Caddy; при ошибке всё откатывается. Файлы <code>robots.txt</code> и <code>sitemap.xml</code> приезжают на сервер сами вместе с сайтом. Запуск повторно безопасен.</p>
+    <p>Скрипт добавляет заголовки безопасности (HSTS, nosniff, запрет встраивания в чужие страницы и др.) и красивую страницу «404» (сам файл <code>404.html</code> лежит в <code>site-private</code>), проверяет конфиг и перезагружает Caddy; при ошибке всё откатывается. Файлы <code>robots.txt</code> и <code>sitemap.xml</code> приезжают на сервер сами вместе с сайтом. Запуск повторно безопасен.</p>
     <div class="cmd"><span class="where">на сервере</span><pre><code>bash &lt;(curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/harden-site.sh)</code></pre><button class="btn copy" type="button">Копировать</button></div>
     <p>Проверка с Mac: <code>curl -sI https://anitech.meeymirita.ru/ | grep -i -E "strict|nosniff|x-frame"</code> — должны быть три строки.</p>
   </div></details>
@@ -592,7 +592,7 @@ gh run rerun &lt;номер&gt;                     # перезапустить
     <dt>Репозиторий</dt><dd>Папка проекта с историей изменений. Хранится на GitHub.</dd>
     <dt>Коммит</dt><dd>Один сохранённый «снимок» изменений с подписью, что изменили.</dd>
     <dt>Пуш (push)</dt><dd>Отправить свои коммиты на GitHub.</dd>
-    <dt>Подмодуль</dt><dd>Отдельный репозиторий, подключённый внутрь главного. Каждая лаба — подмодуль. Поэтому пуш делается в два этапа: сначала лабы, потом главный.</dd>
+    <dt>Подмодуль</dt><dd>Отдельный репозиторий, подключённый внутрь главного. Каждая лаба — подмодуль, и служебные страницы (<code>site-private</code>) тоже. Поэтому пуш делается в два этапа: сначала лабы, потом главный.</dd>
     <dt>GitHub Actions</dt><dd>Роботы GitHub, которые запускаются сами после пуша. У нас один: «Sync bucket».</dd>
     <dt>Секрет GitHub</dt><dd>Пароль, спрятанный в настройках репозитория: робот его использует, а в логах и коде он не виден.</dd>
     <dt>Бакет (Object Storage)</dt><dd>Облачное хранилище файлов у Yandex. Каждый файл имеет адрес.</dd>
@@ -610,7 +610,7 @@ gh run rerun &lt;номер&gt;                     # перезапустить
   </dl>
 </section>
 
-<footer>Обновлено 05.10.2026 (вечер). Полный аудит проекта и вопросы к владельцу — <code>fixes/common/_audit-2026-10-05.md</code> в репозитории. Нашли на странице устаревшее — скажите мне, поправлю. Правится файл <code>mira/index.html</code> и деплоится как весь сайт.</footer>
+<footer>Обновлено 06.10.2026. Полный аудит проекта и вопросы к владельцу — <code>fixes/common/_audit-2026-10-05.md</code> в репозитории. Нашли на странице устаревшее — скажите мне, поправлю. Правится файл <code>mira/index.html</code> в репозитории <code>site-private</code>, деплоится вместе с сайтом.</footer>
 </main>
 </div>
 
