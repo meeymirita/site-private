@@ -223,12 +223,12 @@
     <li><b>Сервер</b> — компьютер в интернете (Ubuntu), на нём программа <b>Caddy</b> отдаёт сайт по адресу <code>anitech.meeymirita.ru</code>. Туда сайт попадает сам, по таймеру.</li>
     <li><b>Бакет</b> — «облачный склад» Yandex. Методички, обложки и фото открываются прямо оттуда, чтобы не нагружать сервер.</li>
     <li><b>Воркер Cloudflare</b> — маленькая программа, которая хранит ваш прогресс по лабам, чтобы он не пропадал, если вы очистите браузер или откроете сайт на другом устройстве.</li>
-    <li><b>Cloudflare</b> также отвечает за <b>DNS</b>: это «телефонная книга», которая говорит браузеру, что <code>anitech.meeymirita.ru</code> находится на сервере. Сейчас там ещё старый сервер <code>45.10.166.23</code>; после переезда запись переключат на <code>185.113.138.132</code>.</li>
+    <li><b>Cloudflare</b> также отвечает за <b>DNS</b>: это «телефонная книга», которая говорит браузеру, что <code>anitech.meeymirita.ru</code> находится на сервере <code>185.113.138.132</code> (переехали туда 21.10.2026, старый сервер больше не используется).</li>
   </ul>
   <div class="callout ok"><b class="t">Что важно понять</b>
     <p>Источник правды — <b>GitHub</b>. Сервер и бакет — «копии для показа». Если на сайте что-то не так, правим в репозитории и пушим, а не лезем править сервер руками (иначе при следующем обновлении правка исчезнет).</p></div>
-  <div class="callout warn"><b class="t">Переезд на новый сервер — в процессе (21.10.2026)</b>
-    <p>Сайт переезжает со старого сервера (<code>45.10.166.23</code>) на новый, <code>185.113.138.132</code>. На новом сервере путь сайта — <code>/var/sites/anitech_performance</code> (не <code>/var/www/...</code>, как было: у нового хостинга своя конвенция папок). DNS <code>anitech.meeymirita.ru</code> пока ещё указывает на старый сервер — переключат после проверки нового. SSH-ключ и ОС нового сервера в этой шпаргалке пока не обновлены (уточнить у владельца и дописать) — команды <code>ssh</code> ниже и описание системы относятся к <b>старому</b> серверу, пока не исправлено явно.</p></div>
+  <div class="callout ok"><b class="t">Переезд на новый сервер — завершён (21.10.2026)</b>
+    <p>Сайт переехал со старого сервера (<code>45.10.166.23</code>, больше не используется) на новый, <code>185.113.138.132</code>. Путь сайта там — <code>/var/sites/anitech_performance</code> (у нового хостинга своя конвенция папок, не <code>/var/www/...</code>). DNS переключён, https работает. Подробности и грабли, на которые наступили при переезде — раздел «Сервер» ниже. SSH-ключ и ОС нового сервера в этой шпаргалке пока не обновлены — уточнить у владельца и дописать.</p></div>
 </section>
 
 <!-- ═══════════ 2 ═══════════ -->
@@ -268,7 +268,7 @@
       <p>Зона <code>meeymirita.ru</code> (куплена у REG.RU, там только указано, что управляет Cloudflare). В DNS запись для <code>anitech</code> должна вести на IP сервера.</p>
       <div class="links"><a href="https://dash.cloudflare.com/4e6de227256e2503b62b9c0f087e4954">Панель Cloudflare</a></div></div>
     <div class="card"><span class="tag">сервер</span><h3>Сервер с Caddy</h3>
-      <p>Новый сервер, адрес <code>185.113.138.132</code> (ОС и SSH-ключ — уточнить и дописать сюда). Он же отдаёт ваш другой сайт <code>meeymirita.ru</code>. Старый сервер (Ubuntu 22.04, <code>45.10.166.23</code>) — пока не выключен, судьба решается отдельно.</p></div>
+      <p>Сервер, адрес <code>185.113.138.132</code> (ОС и SSH-ключ — уточнить и дописать сюда). Он же отдаёт ваш другой сайт <code>meeymirita.ru</code>. Старый сервер (Ubuntu 22.04, <code>45.10.166.23</code>) больше не используется — можно отключать аренду, когда удобно.</p></div>
     <div class="card"><span class="tag">тут</span><h3>Эта страница</h3>
       <p>Файл <code>mira/index.html</code> лежит в отдельном репозитории <code>site-private</code> (подмодуль главного). Правка → пуш в <code>site-private</code> → «Bump site-private» в главном → через минуту на сайте.</p></div>
   </div>
@@ -313,37 +313,32 @@
   <span class="num">05</span>
   <h2>Сервер</h2>
   <p class="sub">Что на нём стоит и как зайти.</p>
-  <div class="callout warn"><b class="t">Переезд на новый сервер, 21.10.2026 — раздел в процессе обновления</b>
-    <p>Переходите с <code>45.10.166.23</code> на <code>185.113.138.132</code> (хостнейм <code>se-40678</code>, не значащий). Путь сайта сменён на <code>/var/sites/anitech_performance</code> — у нового хостинга сайты по конвенции лежат в <code>/var/sites/&lt;имя&gt;/</code>, не в <code>/var/www/...</code>. Caddy на новом сервере вы уже поставили и настроили сами (блок для <code>meeymirita.ru</code> есть); блок для <code>anitech.meeymirita.ru</code> — ниже. <b>ОС нового сервера и SSH-ключ для входа в этой шпаргалке пока не обновлены</b> — допишите, когда определитесь (команда <code>ssh</code> ниже ещё со старым ключом/IP, поменяйте при первом реальном заходе на новый сервер). Судьба старого сервера и жившего на нём отдельного Docker-проекта (<code>meeymirita-frontend/-backend/-postgres/-redis</code>, <code>amnezia-awg2</code>) — открытый вопрос, не этот репозиторий.</p></div>
+  <div class="callout ok"><b class="t">Переезд на новый сервер — завершён (21.10.2026)</b>
+    <p>Переехали с <code>45.10.166.23</code> на <code>185.113.138.132</code> (хостнейм <code>se-40678</code>, не значащий; арендован на ~полгода, примерно до апреля 2027). Путь сайта — <code>/var/sites/anitech_performance</code> (у нового хостинга сайты по конвенции лежат в <code>/var/sites/&lt;имя&gt;/</code>, не в <code>/var/www/...</code>). DNS переключён, https работает, пароль на <code>/mira/</code> и защитные заголовки поставлены заново. <b>Старый сервер больше не используется</b> — отдельный Docker-проект и прежний <code>meeymirita.ru</code>, которые на нём жили, больше не актуальны; аренду можно отключать когда угодно. <b>ОС нового сервера и SSH-ключ для входа в этой шпаргалке пока не обновлены</b> — допишите, когда определитесь.</p></div>
 
-  <h3>Что на сервере (новом, 185.113.138.132)</h3>
+  <h3>Что на сервере (185.113.138.132)</h3>
   <ul>
     <li><b>Система:</b> уточнить и дописать (на старом сервере была Ubuntu 22.04).</li>
-    <li><b>Caddy</b> (веб-сервер, уже поставлен и настроен владельцем). Конфиг — <code>/etc/caddy/Caddyfile</code>. В нём два сайта:
-      <ul><li><code>meeymirita.ru</code> — отдаёт папку <code>/var/sites/meeymirita_start_page/</code> статикой (на старом сервере это был прокси на Docker-контейнер — на новом сервере иначе, уточнить, переехал ли сам тот проект);</li>
-      <li><code>anitech.meeymirita.ru</code> — должна отдавать папку <code>/var/sites/anitech_performance</code> (этот блок нужно добавить, см. «Что сделать на сервере» ниже).</li></ul>
-      Сертификаты для https Caddy выпускает и продлевает сам — но только после того, как DNS домена будет указывать на этот сервер.</li>
-    <li><b>Таймер деплоя</b> <code>anitech-deploy.timer</code> — раз в минуту обновляет сайт (после установки). Рабочая копия репозитория — <code>/opt/anitech-src</code> (отдельно от папки сайта, чтобы <code>.git</code> не раздавался наружу).</li>
+    <li><b>Caddy</b> (поставлен и настроен владельцем). Конфиг — <code>/etc/caddy/Caddyfile</code>, два сайта:
+      <ul><li><code>meeymirita.ru</code> — отдаёт папку <code>/var/sites/meeymirita_start_page/</code> статикой;</li>
+      <li><code>anitech.meeymirita.ru</code> — отдаёт <code>/var/sites/anitech_performance/</code>, плюс <code>import /etc/caddy/anitech-hardening.conf</code> и <code>import /etc/caddy/mira-auth.conf</code>.</li></ul>
+      Сертификат https Caddy выпустил и продлевает сам.</li>
+    <li><b>Таймер деплоя</b> <code>anitech-deploy.timer</code> — раз в минуту обновляет сайт. Рабочая копия репозитория — <code>/opt/anitech-src</code> (отдельно от папки сайта, чтобы <code>.git</code> не раздавался наружу).</li>
   </ul>
 
-  <h3>Что сделать на сервере (деплой anitech-performance)</h3>
+  <h3>Как был сделан переезд (для памяти / если понадобится повторить на третьем сервере)</h3>
   <ol class="steps">
-    <li><b>Добавить блок сайта в Caddyfile</b>
-      <div class="cmd"><span class="where">на сервере, в /etc/caddy/Caddyfile</span><pre><code>anitech.meeymirita.ru {
-	root * /var/sites/anitech_performance
-	file_server
-}</code></pre><button class="btn copy" type="button">Копировать</button></div>
-      Затем <code>caddy validate --config /etc/caddy/Caddyfile &amp;&amp; systemctl reload caddy</code>.</li>
-    <li><b>Поставить деплой одной командой</b> — сама скачает git/rsync, клонирует репозиторий в <code>/opt/anitech-src</code>, сделает бэкап уже лежащей в <code>/var/sites/anitech_performance</code> папки (вы её туда вручную клонировали — скрипт это сам обработает) и включит таймер:
+    <li><b>Блок сайта в Caddyfile</b> — <code>anitech.meeymirita.ru { root * /var/sites/anitech_performance; file_server }</code>, затем <code>caddy validate --config /etc/caddy/Caddyfile &amp;&amp; systemctl reload caddy</code>.</li>
+    <li><b>Деплой одной командой</b> (ставит git/rsync, клонирует репозиторий в <code>/opt/anitech-src</code>, включает таймер):
       <div class="cmd"><span class="where">на сервере</span><pre><code>curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/install.sh | bash</code></pre><button class="btn copy" type="button">Копировать</button></div></li>
-    <li><b>Заново поставить пароль на /mira/ и защитные заголовки</b> — хеш пароля и заголовки жили только в <code>/etc/caddy/</code> старого сервера, в гите их нет, сами не переедут:
+    <li><b>Пароль на /mira/ и защитные заголовки заново</b> — хеш пароля и заголовки жили только в <code>/etc/caddy/</code> старого сервера, сами не переезжают:
       <div class="cmd"><span class="where">на сервере</span><pre><code>bash &lt;(curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/protect-mira.sh)
 bash &lt;(curl -fsSL https://raw.githubusercontent.com/meeymirita/anitech-performance/main/deploy/harden-site.sh)</code></pre><button class="btn copy" type="button">Копировать</button></div></li>
-    <li><b>Проверить без переключения DNS</b>
-      <div class="cmd"><span class="where">на вашем Mac</span><pre><code>curl -IL -H "Host: anitech.meeymirita.ru" http://185.113.138.132/</code></pre><button class="btn copy" type="button">Копировать</button></div>
-      Ответ <code>308</code> на https — значит, Caddy нашёл блок и раздаёт правильную папку. Полноценный https до переключения DNS не заработает (Let's Encrypt не может подтвердить домен на IP, на который DNS не указывает).</li>
-    <li><b>Переключить DNS</b> на <code>185.113.138.132</code> (когда новый сервер проверен) — запись у Cloudflare, TTL короткий (5 минут).</li>
+    <li><b>Переключить DNS</b> на IP нового сервера — запись у Cloudflare, TTL короткий (5 минут).</li>
   </ol>
+  <div class="callout warn"><b class="t">Грабли, на которые наступили 21.10.2026</b>
+    <p><b>Правки в <code>deploy/</code> без пуша на GitHub не действуют</b>: скрипт на сервере тянется через <code>raw.githubusercontent.com</code>, а не из локальных файлов — пока правка не запушена, сервер ставит старую версию (так один раз выложилось в старый путь <code>/var/www/anitech-performance</code> — это было безопасно убрать, Caddy туда не смотрел).</p>
+    <p><b>Таймер перезаливает папку сайта только при новом коммите</b> (или с <code>FORCE=1</code>) — если руками удалить содержимое <code>/var/sites/anitech_performance</code>, ожидая, что таймер «перекачает» его заново, папка останется пустой до следующего реального изменения в репозитории. Чтобы выложить принудительно: <code>FORCE=1 /opt/anitech-src/deploy/deploy-site.sh</code>.</p></div>
 
   <h3>Как зайти на сервер</h3>
   <div class="cmd"><span class="where">на вашем Mac</span><pre><code>ssh -i ~/.ssh/id_anitech root@185.113.138.132</code></pre><button class="btn copy" type="button">Копировать</button></div>
